@@ -140,6 +140,7 @@ async def read_sensor_data():
                     logger.error(f"Error reading heartbeat data: {e}")
                     continue
             
+            print(payload)
             return payload
         except Exception as e:
             logger.error(f"Error in read_sensor_data: {e}")
