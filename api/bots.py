@@ -72,8 +72,8 @@ class BotUpdate(BaseModel):
 def update_bot(bot_data: BotUpdate):
     db = get_database()
     
-    # Check if bot exists
-    existing_bot = db.table("bots").select("*").eq("mac", bot_data.mac).single().execute()
+    # Check if bot exists (don't use .single() to avoid error on 0 rows)
+    existing_bot = db.table("bots").select("*").eq("mac", bot_data.mac).execute()
     
     # Prepare data for insert/update (exclude None values and mac for updates)
     update_data = {}
