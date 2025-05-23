@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Server configuration
-SERVER_IP = "192.168.1.100"  # Replace with your actual server IP
+SERVER_IP = "192.168.86.100"  # Replace with your actual server IP
 PORT = 8000
 BASE_URL = f"http://{SERVER_IP}:{PORT}"
 
