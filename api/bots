@@ -1,39 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from utils.db import get_database
 from pydantic import BaseModel
-
-router = APIRouter()
-
-# GET ENDPOINTS
-# ====================================================================================
-
-class BotGet(BaseModel):
-    mac: str
-
-@router.get("/bot/get")
-def get_bot(details: BotGet):
-    db = get_database()
-    
-    response = db.table("bots").select("*").eq("mac", str(details.mac)).single().execute()
-    
-    if not response.data or len(response.data) == 0:
-        raise HTTPException(
-            detail=f"Bot with MAC {details.mac} not found"
-        )
-    
-    return response.data[0]
-
-
-# ====================================================================================
-# END GET ENDPOINTS
-
-
-
-# POST ENDPOINTS
-# ====================================================================================
-from fastapi import APIRouter, HTTPException
-from utils.db import get_database
-from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
