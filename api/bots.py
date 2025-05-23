@@ -72,20 +72,34 @@ class BotUpdate(BaseModel):
 def update_bot(bot_data: BotUpdate):
     db = get_database()
     
+    # Check if bot exists
     existing_bot = db.table("bots").select("*").eq("mac", bot_data.mac).single().execute()
     
-    if not existing_bot.data or len(existing_bot.data) == 0:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Bot with MAC {bot_data.mac} not found"
-        )
-    
+    # Prepare data for insert/update (exclude None values and mac for updates)
     update_data = {}
-    for field, value in bot_data.model_dump().items():
-        if value is not None and field != "mac":
-            update_data[field] = value
+    insert_data = {"mac": bot_data.mac}  # Always include mac for inserts
     
+    for field, value in bot_data.model_dump().items():
+        if value is not None:
+            insert_data[field] = value
+            if field != "mac":  # Don't include mac in update data
+                update_data[field] = value
+    
+    # If bot doesn't exist, create it
+    if not existing_bot.data or len(existing_bot.data) == 0:
+        response = db.table("bots").insert(insert_data).execute()
+        
+        if not response.data or len(response.data) == 0:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to create bot with MAC {bot_data.mac}"
+            )
+        
+        return response.data[0]
+    
+    # Bot exists, update it
     if not update_data:
+        # No fields to update, return existing bot
         return existing_bot.data[0]
     
     response = db.table("bots").update(update_data).eq("mac", bot_data.mac).execute()
