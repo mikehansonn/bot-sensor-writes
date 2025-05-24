@@ -16,7 +16,7 @@ PORT = 8000
 BASE_URL = f"http://{SERVER_IP}:{PORT}"
 
 # Automatically determine the robot ID
-robot_id = 'fearless'
+robot_id = 'terminator'
 
 compass_file = f"/home/{robot_id}/robot/cytron/compass_broadcast.txt"
 gps_file = f"/home/{robot_id}/robot/cytron/gps_broadcast.txt"
